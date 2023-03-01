@@ -33,3 +33,7 @@ export interface GetByIdInputDTO {
 export interface GetByIdOutputDTO {
     user: UserModel
 }
+
+export interface DeleteUserOutputDTO {
+    message: string
+}
