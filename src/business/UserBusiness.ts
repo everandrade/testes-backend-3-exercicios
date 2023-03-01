@@ -1,5 +1,5 @@
 import { UserDatabase } from "../database/UserDatabase"
-import { DeleteUserInputDTO, GetAllOutputDTO, GetByIdInputDTO, GetByIdOutputDTO, LoginInputDTO, LoginOutputDTO, SignupInputDTO, SignupOutputDTO } from "../dtos/userDTO";
+import { DeleteUserInputDTO, DeleteUserOutputDTO, GetAllOutputDTO, GetByIdInputDTO, GetByIdOutputDTO, LoginInputDTO, LoginOutputDTO, SignupInputDTO, SignupOutputDTO } from "../dtos/userDTO";
 import { BadRequestError } from "../errors/BadRequestError";
 import { NotFoundError } from "../errors/NotFoundError";
 import { User } from "../models/User";
@@ -14,7 +14,7 @@ export class UserBusiness {
         private idGenerator: IdGenerator,
         private tokenManager: TokenManager,
         private hashManager: HashManager
-    ) {}
+    ) { }
 
     public signup = async (input: SignupInputDTO): Promise<SignupOutputDTO> => {
         const { name, email, password } = input
@@ -100,11 +100,11 @@ export class UserBusiness {
 
         const isPasswordCorrect = await this.hashManager
             .compare(password, hashedPassword)
-        
+
         if (!isPasswordCorrect) {
             throw new BadRequestError("'password' incorreto")
         }
-        
+
         const payload: TokenPayload = {
             id: user.getId(),
             name: user.getName(),
@@ -139,7 +139,7 @@ export class UserBusiness {
         return output
     }
 
-    public deleteUser = async (input: DeleteUserInputDTO): Promise<void> => {
+    public deleteUser = async (input: DeleteUserInputDTO): Promise<DeleteUserOutputDTO> => {
         const { idToDelete, token } = input
 
         if (typeof token !== "string") {
@@ -163,11 +163,17 @@ export class UserBusiness {
         }
 
         await this.userDatabase.deleteById(idToDelete)
+
+        const output: DeleteUserOutputDTO = {
+            message: "usuário deletado"
+        }
+
+        return output
     }
 
     public getById = async (input: GetByIdInputDTO): Promise<GetByIdOutputDTO> => {
         const { idToFind } = input
-        
+
         const userDB = await this.userDatabase.findById(idToFind)
 
         if (!userDB) {

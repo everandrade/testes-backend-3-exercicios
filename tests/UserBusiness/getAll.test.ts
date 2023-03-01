@@ -1,4 +1,5 @@
 import { UserBusiness } from "../../src/business/UserBusiness"
+import { GetByIdInputDTO } from "../../src/dtos/userDTO"
 import { USER_ROLES } from "../../src/types"
 import { HashManagerMock } from "../mocks/HashManagerMock"
 import { IdGeneratorMock } from "../mocks/IdGeneratorMock"
